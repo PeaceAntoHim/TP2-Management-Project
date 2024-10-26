@@ -26,7 +26,11 @@ class ProjectController extends Controller
 
     public function create()
     {
-        return view('projects.create');
+        $upcomingProjects = Project::where('due_date', '<=', Carbon::now()->addDays(7))->get();
+        $upcomingTasks = Task::where('due_date', '<=', Carbon::now()->addDays(7))
+            ->where('status', '!=', 'completed')
+            ->get();
+        return view('projects.create', compact('upcomingProjects', 'upcomingTasks'));
     }
 
     public function store(Request $request)

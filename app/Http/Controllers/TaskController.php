@@ -6,13 +6,18 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class TaskController extends Controller
 {
     // Show the task creation form
     public function create(Project $project)
     {
-        return view('tasks.create', compact('project'));
+        $upcomingProjects = Project::where('due_date', '<=', Carbon::now()->addDays(7))->get();
+        $upcomingTasks = Task::where('due_date', '<=', Carbon::now()->addDays(7))
+            ->where('status', '!=', 'completed')
+            ->get();
+        return view('tasks.create', compact('project', 'upcomingProjects', 'upcomingTasks'));
     }
 
     // Store the new task
