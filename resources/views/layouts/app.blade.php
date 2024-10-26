@@ -26,12 +26,22 @@
 
 <body>
     <div class="container mx-auto px-4">
-        <!-- Notifications Area -->
         <div id="notifications" class="mb-4 p-4 bg-yellow-100 rounded-lg shadow">
-            @foreach (\App\Models\Notification::where('read', false)->get() as $notification)
-                <p class="text-yellow-900">{{ $notification->message }}</p>
-            @endforeach
+            @if ($upcomingProjects->isNotEmpty() || $upcomingTasks->isNotEmpty())
+                <h2 class="text-yellow-900 font-semibold mb-2">Upcoming Deadlines:</h2>
+                @foreach ($upcomingProjects as $project)
+                    <p class="text-yellow-900">Project "{{ $project->name }}" is due on
+                        {{ \Carbon\Carbon::parse($project->due_date)->format('d M Y') }}.</p>
+                @endforeach
+                @foreach ($upcomingTasks as $task)
+                    <p class="text-yellow-900">Task "{{ $task->name }}" in project "{{ $task->project->name }}" is due
+                        on {{ \Carbon\Carbon::parse($task->due_date)->format('d M Y') }}.</p>
+                @endforeach
+            @else
+                <p class="text-yellow-900">No upcoming deadlines.</p>
+            @endif
         </div>
+
 
         <!-- Main Content -->
         @yield('content')
