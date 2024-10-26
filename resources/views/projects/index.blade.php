@@ -35,17 +35,31 @@
                     @foreach ($project->tasks as $task)
                         <li class="flex justify-between items-center p-2 bg-gray-50 rounded-lg shadow-sm">
                             <span class="text-gray-800 font-medium">
-                                {{ $task->name }} - {{ ucfirst($task->status) }} - Due: {{ $task->due_date }}
+                                {{ $task->name }} - Due: {{ $task->due_date }}
                             </span>
-                            <span
-                                class="px-3 py-1 rounded-full text-sm font-semibold
-                            {{ $task->status === 'completed'
-                                ? 'bg-green-500 text-white'
-                                : ($task->status === 'in_progress'
-                                    ? 'bg-yellow-500 text-gray-800'
-                                    : 'bg-gray-300 text-gray-800') }}">
-                                {{ ucfirst($task->status) }}
-                            </span>
+                            <form action="{{ route('tasks.updateStatus', $task->id) }}" method="POST"
+                                class="flex items-center">
+                                @csrf
+                                @method('PATCH')
+                                <select name="status" onchange="this.form.submit()"
+                                    class="px-2 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="pending" {{ $task->status == 'pending' ? 'selected' : '' }}>Pending
+                                    </option>
+                                    <option value="in_progress" {{ $task->status == 'in_progress' ? 'selected' : '' }}>In
+                                        Progress</option>
+                                    <option value="completed" {{ $task->status == 'completed' ? 'selected' : '' }}>
+                                        Completed</option>
+                                </select>
+                                <span
+                                    class="ml-2 px-3 py-1 rounded-full text-sm font-semibold
+                                    {{ $task->status === 'completed'
+                                        ? 'bg-green-500 text-white'
+                                        : ($task->status === 'in_progress'
+                                            ? 'bg-yellow-500 text-gray-800'
+                                            : 'bg-gray-300 text-gray-800') }}">
+                                    {{ ucfirst($task->status) }}
+                                </span>
+                            </form>
                         </li>
                     @endforeach
                 </ul>
