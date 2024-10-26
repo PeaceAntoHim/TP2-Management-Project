@@ -12,11 +12,19 @@
 
         <form action="{{ route('projects.search') }}" method="POST" class="flex items-center mb-8">
             @csrf
-            <input type="text" name="search" placeholder="Search projects..."
-                class="px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700 transition">
-                Search
-            </button>
+            <form action="{{ route('projects.search') }}" method="POST" class="flex items-center mb-8">
+                @csrf
+                <input type="text" name="search" placeholder="Search projects..."
+                    class="px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                <input type="date" name="search_date" placeholder="Search by date"
+                    class="ml-2 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+
+                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                    Search
+                </button>
+            </form>
+
         </form>
 
         @foreach ($projects as $project)

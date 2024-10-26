@@ -41,8 +41,31 @@ class ProjectController extends Controller
 
     public function search(Request $request)
     {
-        $search = $request->get('search');
-        $projects = Project::where('name', 'like', "%$search%")->get();
-        return view('projects.index', compact('projects'));
+        $search = $request->input('search');
+        $searchDate = $request->input('search_date');
+
+        // Base query with eager loading for tasks
+        $query = Project::with('tasks');
+
+        // Add name-based search if a term is provided
+        if ($search) {
+            $query->where('name', 'like', "%$search%");
+        }
+
+        // Add date-based search if a date is provided
+        if ($searchDate) {
+            $query->whereDate('due_date', $searchDate);
+        }
+
+        // Fetch filtered projects
+        $projects = $query->get();
+
+        // Upcoming notifications
+        $upcomingProjects = Project::where('due_date', '<=', Carbon::now()->addDays(7))->get();
+        $upcomingTasks = Task::where('due_date', '<=', Carbon::now()->addDays(7))
+            ->where('status', '!=', 'completed')
+            ->get();
+
+        return view('projects.index', compact('projects', 'upcomingProjects', 'upcomingTasks'));
     }
 }
